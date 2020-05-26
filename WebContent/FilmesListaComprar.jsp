@@ -1,4 +1,4 @@
-</html><%@ page language="java" contentType="text/html; charset=UTF-8"
+<%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
@@ -11,7 +11,7 @@
 		<meta http-equiv="X-UA-Compatible" content="ie=edge">
 		<link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
 		
-		<title>Carrinho de compras</title>
+		<title>Filmes para comprar</title>
 		
 		<link rel="stylesheet"
 			href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
@@ -24,25 +24,21 @@
 	<header id="topo">
 		<c:import url="Menu.jsp" />
 		<div class="bg-dark cbg-rolo text-white text-center p-2">
-			<h1 class="text-bold text-uppercase ctext-shadow ">🍿Finalizar compra🍿</h1>
+			<h1 class="text-bold text-uppercase ctext-shadow ">🍿Filmes para comprar🍿</h1>
 		</div>
 	</header>
-	<form action="comprar_filmes.do" method="GET">
+	<form action="comprar_filmes.do" method="POST">
 		<div class="container">
 			<div class="row mt-3 justify-content-center">
 			</div>
 			<div class="row justify-content-center my-3">
 				<div class="bg-dark col-md-10 pl-5 py-3 rounded-top shadow" style="background-color: rgba(255,255,255,.05)">
 					<button id="btnComprar" type="submit" name="acao"
-						value="btn-finalizar" class="btn btn-success text-uppercase">Finalizar
-					</button>
+						value="page-comprar" class="btn btn-success text-uppercase"
+						disabled>Comprar</button>
 					<button id="btnExibir" type="submit" name="acao"
-						value="btn-exibir" class="btn btn-primary text-uppercase ml-3"disabled>Exibir
-					</button>
-					<button id="btnExcluir" type="submit" name="acao"
-						value="btn-excluir-do-carrinho" class="btn btn-danger text-uppercase ml-3"disabled>Excluir
-					</button>
-					<button type="submit" name="acao" value="page-todos" class="btn btn-light text-uppercase ml-3">Voltar</button>
+						value="btn-exibir" class="btn btn-primary text-uppercase ml-3"
+						disabled>Exibir</button>
 				</div>
 				<table class="table table-dark table-striped col-sm-10 rounded-bottom shadow">
 					<thead>
@@ -100,13 +96,13 @@
 			}
 			if (caixa.length === 0) {
 				document.getElementById("btnExibir").disabled = true;
-				document.getElementById("btnExcluir").disabled = true;
+				document.getElementById("btnComprar").disabled = true;
 			} else if (caixa.length === 1) {
 				document.getElementById("btnExibir").disabled = false;
-				document.getElementById("btnExcluir").disabled = false;
+				document.getElementById("btnComprar").disabled = false;
 			} else {
 				document.getElementById("btnExibir").disabled = true;
-				document.getElementById("btnExcluir").disabled = false;
+				document.getElementById("btnComprar").disabled = false;
 			}
 		}
 	</script>

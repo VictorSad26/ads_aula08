@@ -1,4 +1,4 @@
-</html><%@ page language="java" contentType="text/html; charset=UTF-8"
+<%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
@@ -11,7 +11,7 @@
 		<meta http-equiv="X-UA-Compatible" content="ie=edge">
 		<link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
 		
-		<title>Carrinho de compras</title>
+		<title>Lista de Filmes</title>
 		
 		<link rel="stylesheet"
 			href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
@@ -24,25 +24,25 @@
 	<header id="topo">
 		<c:import url="Menu.jsp" />
 		<div class="bg-dark cbg-rolo text-white text-center p-2">
-			<h1 class="text-bold text-uppercase ctext-shadow ">🍿Finalizar compra🍿</h1>
+			<h1 class="text-bold text-uppercase ctext-shadow ">🍿Lista de
+				filme🍿</h1>
 		</div>
 	</header>
-	<form action="comprar_filmes.do" method="GET">
+	<form action="manter_filmes.do" method="POST">
 		<div class="container">
 			<div class="row mt-3 justify-content-center">
 			</div>
 			<div class="row justify-content-center my-3">
 				<div class="bg-dark col-md-10 pl-5 py-3 rounded-top shadow" style="background-color: rgba(255,255,255,.05)">
-					<button id="btnComprar" type="submit" name="acao"
-						value="btn-finalizar" class="btn btn-success text-uppercase">Finalizar
-					</button>
-					<button id="btnExibir" type="submit" name="acao"
-						value="btn-exibir" class="btn btn-primary text-uppercase ml-3"disabled>Exibir
-					</button>
-					<button id="btnExcluir" type="submit" name="acao"
-						value="btn-excluir-do-carrinho" class="btn btn-danger text-uppercase ml-3"disabled>Excluir
-					</button>
-					<button type="submit" name="acao" value="page-todos" class="btn btn-light text-uppercase ml-3">Voltar</button>
+					<button id="btnExcluir" type="button"
+						class="btn btn-danger text-uppercase" data-toggle="modal"
+						data-target="#modalExcluir" disabled>Excluir</button>
+					<button id="btnEditar" type="submit" name="acao"
+						value="btn-atualizar-lista" class="btn btn-warning text-uppercase mx-3"
+						disabled>Editar</button>
+					<button id="btnVisualizar" type="submit" name="acao"
+						value="btn-exibir-lista" class="btn btn-primary text-uppercase"
+						disabled>Exibir</button>
 				</div>
 				<table class="table table-dark table-striped col-sm-10 rounded-bottom shadow">
 					<thead>
@@ -78,6 +78,27 @@
 				<p><a class="btn btn-secondary btn-topo" href="#topo" role="button"> ^ </a></p>
 			</div>  
 		</div>
+		<div class="modal fade" id="modalExcluir" tabindex="-1" role="dialog"
+			aria-labelledby="modalExcluirTitle" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+					<div class="modal-header bg-dark text-white">
+						<h5 class="modal-title" id="modalExcluirLongTitle">Tem
+							certeza que deseja excluir?</h5>
+						<button type="button" class="close text-white"
+							data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-dismiss="modal">Cancelar</button>
+						<button type="submit" name="acao" value="btn-excluir-lista"
+							class="btn btn-danger text-uppercase">Excluir</button>
+					</div>
+				</div>
+			</div>
+		</div>
 	</form>
 	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
 		integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
@@ -98,14 +119,17 @@
 			} else {
 				caixa.pop();
 			}
-			if (caixa.length === 0) {
-				document.getElementById("btnExibir").disabled = true;
+			if (caixa.length == 0) {
+				document.getElementById("btnEditar").disabled = true;
+				document.getElementById("btnVisualizar").disabled = true;
 				document.getElementById("btnExcluir").disabled = true;
-			} else if (caixa.length === 1) {
-				document.getElementById("btnExibir").disabled = false;
+			} else if (caixa.length == 1) {
+				document.getElementById("btnEditar").disabled = false;
+				document.getElementById("btnVisualizar").disabled = false;
 				document.getElementById("btnExcluir").disabled = false;
 			} else {
-				document.getElementById("btnExibir").disabled = true;
+				document.getElementById("btnEditar").disabled = true;
+				document.getElementById("btnVisualizar").disabled = true;
 				document.getElementById("btnExcluir").disabled = false;
 			}
 		}

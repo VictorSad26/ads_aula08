@@ -3,7 +3,6 @@ package ads.pipoca.model.entity;
 public class Genero {
 	private int id;
 	private String nome;
-	
 	public int getId() {
 		return id;
 	}

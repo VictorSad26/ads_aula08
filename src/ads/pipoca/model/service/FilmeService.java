@@ -7,43 +7,43 @@ import ads.pipoca.model.dao.FilmeDAO;
 import ads.pipoca.model.entity.Filme;
 
 public class FilmeService {
-	FilmeDAO dao;
-	
-	public FilmeService() {
-		this.dao = new FilmeDAO();
-	}
+    public ArrayList<Filme> listarFilmes() throws IOException {
+        FilmeDAO dao = new FilmeDAO();
+        return dao.listarFilmes();
+    }
 
-	public int inserirFilme(Filme filme) throws IOException {
-		return dao.inserirFilme(filme);
-	}
+    public ArrayList<Filme> listarFilmes(ArrayList<Integer> lista) throws IOException {
+        ArrayList<Filme> filmes = new ArrayList<>();
+        for(int id:lista) {
+            filmes.add(buscarFilme(id));
+        }
+        return filmes;
+    }
 
-	public Filme buscarFilme(int id) throws IOException {
-		return dao.buscarFilme(id);
-	}
-	
-	public Filme excluirFilme(int id) throws IOException {
-		Filme filme = dao.buscarFilme(id);
-		if (filme != null) {
-			dao.excluirFilme(filme.getId());
-			return filme;
-		} else {
-			return null;
-		}
-	}
-	
-	public ArrayList<Filme> listarFilmes() throws IOException {
-		return dao.listarFilmes();
-	}
-	
-	public ArrayList<Filme> listarFilmes(ArrayList<Integer> lista) throws IOException {
-		ArrayList<Filme> filmes = new ArrayList<>();
+    public Filme buscarFilme(int id) throws IOException {
+        FilmeDAO dao = new FilmeDAO();
+        return dao.buscarFilme(id);
+    }
+
+    public int deletarFilme(int id) throws IOException {
+        FilmeDAO dao = new FilmeDAO();
+        return dao.deletarFilme(id);
+    }
+
+    public int inserirFilme(Filme filme) throws IOException {
+        FilmeDAO dao = new FilmeDAO();
+        return dao.inserirFilme(filme);
+    }
+
+    public Filme atualizarFilme(Filme filme) throws IOException {
+        FilmeDAO dao = new FilmeDAO();
+        return dao.atualizarFilme(filme);
+    }
+
+    public void excluirVariosFilmes(ArrayList<Integer> lista) throws IOException{
+        FilmeDAO dao = new FilmeDAO();
 		for(int id:lista) {
-			filmes.add(buscarFilme(id));
+			dao.deletarFilme(id);
 		}
-		return filmes;
-	}
-
-	public void atualizarFilme(Filme filme) throws IOException {
-		dao.atualizarFilme(filme);
-	}
+    }
 }

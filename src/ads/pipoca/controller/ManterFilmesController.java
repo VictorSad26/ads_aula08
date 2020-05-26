@@ -3,10 +3,7 @@ package ads.pipoca.controller;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -22,229 +19,243 @@ import ads.pipoca.model.service.GeneroService;
 
 @WebServlet("/manter_filmes.do")
 public class ManterFilmesController extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setCharacterEncoding("UTF-8");
-		String acao = request.getParameter("acao");
-		Filme filme = null;
-		Genero genero = null;
-		FilmeService fService = new FilmeService();
-		GeneroService gService = new GeneroService();
-		ArrayList<Genero> generos = null;
-		String saida = "index.jsp";
-		String id_filme = null;
-		int idFilme = -1;
-		String titulo = null;
-		String descricao = null;
-		String diretor = null;
-		String idGenero = null;
-		String data = null;
-		String popularidade = null;
-		String posterPath = null;
-		SimpleDateFormat formater = null;
-		java.util.Date dataLanc = null;
-		Enumeration<String> pars = null;
-		String par = null;
-		ArrayList<Integer> listaIds = null;
-		String[] vals = null;
-		ArrayList<Filme> filmes = null;
-		
-		switch(acao) {
-		case "menu-novo-menu-jsp":
-			generos = gService.listarGeneros();
-			request.setAttribute("generos", generos);
-			saida = "InserirFilme.jsp";
-			break;
-		case "btn-visualizar-de-listar-filmes-jsp":
-			pars = request.getParameterNames();
-			listaIds = new ArrayList<>();
-			try {
-				while ((par = pars.nextElement()) != null) {
-					if (par.startsWith("box")) {
-						System.out.println(par +" = "+Arrays.toString(request.getParameterValues(par)));
-						vals = request.getParameterValues(par);
-						if (vals != null && vals.length > 0 && vals[0].equals("on")) {
-							listaIds.add(Integer.parseInt(par.substring(3)));
-						}
-					}
-				}
-			} catch(NoSuchElementException nsee) {
-			}
-			System.out.println("Editar listaIds = "+listaIds);
-		case "btn-mostrar-de-mostrar-filme-jsp":
-			id_filme = request.getParameter("id_filme");
-			if (id_filme != null) {
-				idFilme = Integer.parseInt(id_filme);
-			} else {
-				if (listaIds != null && listaIds.size() > 0) {
-					idFilme = listaIds.get(0);
-				} else {
-					idFilme = -1;
-				}
-				
-			} 
-			filme = fService.buscarFilme(idFilme);
-			System.out.println(filme);
-			request.setAttribute("filme", filme);
-			saida = "Filme.jsp";
-			break;
-		case "btn-inserir-de-inserir-filme-jsp":
-		    titulo = request.getParameter("titulo");
-			descricao = request.getParameter("descricao");
-			diretor = request.getParameter("diretor");
-			idGenero = request.getParameter("genero");
-			data = request.getParameter("data_lancamento");
-			popularidade = request.getParameter("popularidade");
-			posterPath = request.getParameter("poster_path");
-			filme = new Filme();
-			filme.setTitulo(titulo);
-			filme.setDescricao(descricao);
-			filme.setDiretor(diretor);
-			formater = new SimpleDateFormat("yyyy-MM-dd");
-			dataLanc = null;
-			try {
-				dataLanc = formater.parse(data);
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-			filme.setDataLancamento(dataLanc);
-			filme.setPopularidade(Double.parseDouble(popularidade));
-			filme.setPosterPath(posterPath);
-			genero = gService.buscarGenero(Integer.parseInt(idGenero));
-			filme.setGenero(genero);
-			int id = fService.inserirFilme(filme);
-			filme.setId(id);
-			System.out.println(filme);
-			request.setAttribute("filme", filme);
-			saida = "Filme.jsp";
-			break;
-		case "btn-editar-de-listar-filmes-jsp":
-			pars = request.getParameterNames();
-			listaIds = new ArrayList<>();
-			try {
-				while ((par = pars.nextElement()) != null) {
-					if (par.startsWith("box")) {
-						System.out.println(par +" = "+Arrays.toString(request.getParameterValues(par)));
-						vals = request.getParameterValues(par);
-						if (vals != null && vals.length > 0 && vals[0].equals("on")) {
-							listaIds.add(Integer.parseInt(par.substring(3)));
-						}
-					}
-				}
-			} catch(NoSuchElementException nsee) {
-			}
-			System.out.println("Editar listaIds = "+listaIds);
-		case "btn-editar-de-filme-jsp":
-			generos = gService.listarGeneros();
-			request.setAttribute("generos", generos);
-			id_filme = request.getParameter("id_filme");
-			if (id_filme != null) {
-				idFilme = Integer.parseInt(id_filme);
-			} else {
-				if (listaIds != null && listaIds.size() > 0) {
-					idFilme = listaIds.get(0);
-				} else {
-					idFilme = -1;
-				}
-				
-			} 
-			filme = fService.buscarFilme(idFilme);
-			request.setAttribute("filme", filme);
-			System.out.println(filme);
-			saida = "AtualizarFilme.jsp";
-			break;
-		case "btn-atualizar-de-atualizar-filme-jsp":
-			id_filme = request.getParameter("id_filme");
-			idFilme = Integer.parseInt(id_filme);
-			titulo = request.getParameter("titulo");
-			descricao = request.getParameter("descricao");
-		    diretor = request.getParameter("diretor");
-			idGenero = request.getParameter("genero");
-			data = request.getParameter("data_lancamento");
-			popularidade = request.getParameter("popularidade");
-			posterPath = request.getParameter("poster_path");
-			filme = new Filme();
-			filme.setId(idFilme);
-			filme.setTitulo(titulo);
-			filme.setDescricao(descricao);
-			filme.setDiretor(diretor);
-			formater = new SimpleDateFormat("yyyy-MM-dd");
-			dataLanc = null;
-			try {
-				dataLanc = formater.parse(data);
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-			filme.setDataLancamento(dataLanc);
-			filme.setPopularidade(Double.parseDouble(popularidade));
-			filme.setPosterPath(posterPath);
-			genero = gService.buscarGenero(Integer.parseInt(idGenero));
-			filme.setGenero(genero);
-			System.out.println(filme);
-			fService.atualizarFilme(filme);
-			request.setAttribute("filme", filme);
-			saida = "Filme.jsp";
-			break;
-		case "btn-excluir-de-modal-listar-filmes-jsp":
-			pars = request.getParameterNames();
-			listaIds = new ArrayList<>();
-			filmes = new ArrayList<>();
-			try {
-				while ((par = pars.nextElement()) != null) {
-					if (par.startsWith("box")) {
-						System.out.println(par +" = "+Arrays.toString(request.getParameterValues(par)));
-						vals = request.getParameterValues(par);
-						if (vals != null && vals.length > 0 && vals[0].equals("on")) {
-							listaIds.add(Integer.parseInt(par.substring(3)));
-						}
-					}
-				}
-			} catch(NoSuchElementException nsee) {
-			}
-			System.out.println("Excluir listaIds = "+listaIds);
-			for(int idDel: listaIds) {
-				try {
-					filme = fService.excluirFilme(idDel);
-					filmes.add(filme);
-					System.out.println(filme);
-				} catch(NumberFormatException nfe) {
-					nfe.printStackTrace();
-					filme = null;
-				}
-			}
-			request.setAttribute("filmes", filmes);
-			saida = "FilmeExcluido.jsp";
-			break;
-		case "btn-excluir-de-filme-jsp":
-			id_filme = request.getParameter("id_filme");
-			try {
-				idFilme = Integer.parseInt(id_filme);
-				filme = fService.excluirFilme(idFilme);
-				System.out.println(filme);
-			} catch(NumberFormatException nfe) {
-				nfe.printStackTrace();
-				filme = null;
-			}
-			filmes = new ArrayList<>();
-			filmes.add(filme);
-			request.setAttribute("filmes", filmes);
-			saida = "FilmeExcluido.jsp";
-			break;
-		case "menu-listar-menu-jsp":
-			filmes = fService.listarFilmes();
-			request.setAttribute("filmes", filmes);
-			saida = "ListaFilmes.jsp";
-			break;
-		}
-		RequestDispatcher view = request.getRequestDispatcher(saida);
-		view.forward(request, response);
-		
-	}
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        String acao = request.getParameter("acao");
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
+        Filme filme = null;
+        int idFilme = -1, idGenero = -1;
+        String titulo = null, diretor = null, descricao = null, posterPath = null, par = null;
+        SimpleDateFormat sqlDate = new SimpleDateFormat("yyyy-MM-dd");
+        Date data = null;
+        double popularidade = -1;
 
+        ArrayList<Filme> filmes = null;
+        ArrayList<Genero> generos = null;
+        ArrayList<Integer> listaIds = null;
+
+        FilmeService fService = new FilmeService();
+
+        String saida = "index.html";
+
+        switch (acao) {
+            case "page-adm":
+                generos = listarGeneros();
+                request.setAttribute("generos", generos);
+                filmes = listarFilmes();
+                request.setAttribute("filmes", filmes);
+                saida = "AdmPanel.jsp";
+                break;
+
+            case "page-todos":
+                filmes = listarFilmes();
+                request.setAttribute("filmes", filmes);
+                saida = "FilmesLista.jsp";
+                break;
+
+            case "page-exibir":
+                idFilme = Integer.parseInt(request.getParameter("id_exibir"));
+                filme = buscarFilme(idFilme);
+                request.setAttribute("filme", filme);
+                request.setAttribute("titulo", "Exibir Filme");
+                saida = "Filme.jsp";
+                break;
+
+            case "page-excluir":
+                idFilme = Integer.parseInt(request.getParameter("id_excluir"));
+                filme = buscarFilme(idFilme);
+                request.setAttribute("filme", filme);
+                request.setAttribute("titulo", "Excluir Filme");
+                request.setAttribute("btn",
+                        "<button type=\"button\" class=\"btn btn-danger text-uppercase\" data-toggle=\"modal\" data-target=\"#modalExcluir\">Excluir </button>");
+                saida = "Filme.jsp";
+                break;
+
+            case "page-atualizar":
+                idFilme = Integer.parseInt(request.getParameter("id_atualizar"));
+                filme = buscarFilme(idFilme);
+                request.setAttribute("filme", filme);
+                generos = listarGeneros();
+                request.setAttribute("generos", generos);
+                saida = "AtualizarFilme.jsp";
+                break;
+
+            case "btn-inserir":
+                titulo = request.getParameter("titulo");
+                diretor = request.getParameter("diretor");
+                descricao = request.getParameter("descricao");
+
+                try {
+                    data = sqlDate.parse(request.getParameter("data"));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                popularidade = Double.parseDouble(request.getParameter("popularidade"));
+                idGenero = Integer.parseInt(request.getParameter("genero"));
+                posterPath = request.getParameter("posterpath");
+
+                idFilme = inserirFilme(titulo, descricao, diretor, idGenero, data, popularidade, posterPath);
+                Filme filmeInserido = buscarFilme(idFilme);
+
+                request.setAttribute("filme", filmeInserido);
+                request.setAttribute("titulo", "Filme Inserido");
+                saida = "Filme.jsp";
+                break;
+
+            case "btn-atualizar":
+                idFilme = Integer.parseInt(request.getParameter("id_atualizar"));
+                titulo = request.getParameter("titulo");
+                descricao = request.getParameter("descricao");
+                diretor = request.getParameter("diretor");
+                idGenero = Integer.parseInt(request.getParameter("genero"));
+
+                try {
+                    data = sqlDate.parse(request.getParameter("data"));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                popularidade = Double.parseDouble(request.getParameter("popularidade"));
+                posterPath = request.getParameter("posterpath");
+                filme = atualizarFilme(idFilme, titulo, descricao, diretor, idGenero, data, popularidade, posterPath);
+                request.setAttribute("filme", filme);
+                request.setAttribute("titulo", "Filme Atualizado");
+                saida = "Filme.jsp";
+                break;
+
+            case "btn-excluir":
+                int filmeId = Integer.parseInt(request.getParameter("id_excluir"));
+                int feedback = deletarFilme(filmeId);
+                generos = listarGeneros();
+                filmes = listarFilmes();
+                request.setAttribute("feedback", feedback);
+                request.setAttribute("generos", generos);
+                request.setAttribute("filmes", filmes);
+                saida = "AdmPanel.jsp";
+
+                break;
+            case "btn-excluir-lista":
+                listaIds = obterIds(request);
+                fService.excluirVariosFilmes(listaIds);
+                filmes = listarFilmes();
+                request.setAttribute("filmes", filmes);
+                saida = "FilmesLista.jsp";
+                break;
+            case "btn-exibir-lista":
+                listaIds = obterIds(request);
+                filme = buscarFilme(listaIds.get(0));
+                request.setAttribute("filme", filme);
+                saida = "Filme.jsp";
+                break;
+            case "btn-atualizar-lista":
+                listaIds = obterIds(request);
+                filme = buscarFilme(listaIds.get(0));
+                request.setAttribute("filme", filme);
+                generos = listarGeneros();
+                request.setAttribute("generos", generos);
+                saida = "AtualizarFilme.jsp";
+                break;
+        }
+        RequestDispatcher view = request.getRequestDispatcher(saida);
+        view.forward(request, response);
+
+    }
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doGet(request, response);
+    }
+
+    private ArrayList<Integer> obterIds(HttpServletRequest request) {
+        Enumeration<String> pars = request.getParameterNames();
+        ArrayList<Integer> listaIds = new ArrayList<>();
+        String par;
+        String[] vals = null;
+
+        try {
+            while ((par = pars.nextElement()) != null) {
+                if (par.startsWith("box")) {
+                    System.out.println(par + " = " + Arrays.toString(request.getParameterValues(par)));
+                    vals = request.getParameterValues(par);
+                    if (vals != null && vals.length > 0 && vals[0].equals("on")) {
+                        listaIds.add(Integer.parseInt(par.substring(3)));
+                    }
+                }
+            }
+        } catch (NoSuchElementException nsee) {
+        }
+        return listaIds;
+    }
+
+    public Filme buscarFilme(int id) throws IOException {
+        FilmeService filmeService;
+        filmeService = new FilmeService();
+        Filme filme;
+        filme = filmeService.buscarFilme(id);
+        return filme;
+    }
+
+    public ArrayList<Filme> listarFilmes() throws IOException {
+        FilmeService filmeService = new FilmeService();
+        ArrayList<Filme> filmes = filmeService.listarFilmes();
+        return filmes;
+    }
+
+    public ArrayList<Genero> listarGeneros() throws IOException {
+        GeneroService genero;
+        genero = new GeneroService();
+        ArrayList<Genero> generos = genero.listarGeneros();
+        return generos;
+    }
+
+    public int deletarFilme(int id) throws IOException {
+        FilmeService filmeService = new FilmeService();
+        return filmeService.deletarFilme(id);
+    }
+
+    public int inserirFilme(String titulo, String descricao, String diretor, int idGenero, Date data,
+                            double popularidade, String posterPath) throws IOException {
+        Filme filme;
+        Genero genero;
+        filme = new Filme();
+        filme.setTitulo(titulo);
+        filme.setDescricao(descricao);
+        filme.setDiretor(diretor);
+
+        GeneroService generoService = new GeneroService();
+        genero = generoService.buscarGenero(idGenero);
+        filme.setGenero(genero);
+
+        filme.setDataLancamento(data);
+
+        filme.setPopularidade(popularidade);
+        filme.setPosterPath(posterPath);
+        FilmeService service = new FilmeService();
+        return service.inserirFilme(filme);
+    }
+
+    public Filme atualizarFilme(int id, String titulo, String descricao, String diretor, int idGenero, Date data,
+                                double popularidade, String posterPath) throws IOException {
+        Filme filme;
+        Genero genero;
+        filme = new Filme();
+        filme.setId(id);
+        filme.setTitulo(titulo);
+        filme.setDescricao(descricao);
+        filme.setDiretor(diretor);
+
+        GeneroService generoService = new GeneroService();
+        genero = generoService.buscarGenero(idGenero);
+        filme.setGenero(genero);
+
+        filme.setDataLancamento(data);
+        filme.setPopularidade(popularidade);
+        filme.setPosterPath(posterPath);
+        FilmeService service = new FilmeService();
+        return service.atualizarFilme(filme);
+    }
 }
